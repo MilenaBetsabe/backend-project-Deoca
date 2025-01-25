@@ -1,0 +1,27 @@
+[
+  {
+    "id": 2,
+    "title": "producto nuevo",
+    "description": "producto de gran calidad",
+    "code": 456,
+    "price": 1233,
+    "status": true,
+    "stock": 45,
+    "category": "Limpieza",
+    "thumbnails": [
+      "",
+      "",
+      ""
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Producto 3",
+    "description": "producto de gran calidad",
+    "code": "b41",
+    "price": 123,
+    "status": true,
+    "stock": 45,
+    "category": "Limpieza"
+  }
+]
