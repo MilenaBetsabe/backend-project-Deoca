@@ -1,27 +1,12 @@
 [
   {
-    "id": 2,
-    "title": "producto nuevo",
-    "description": "producto de gran calidad",
-    "code": 456,
-    "price": 1233,
-    "status": true,
-    "stock": 45,
-    "category": "Limpieza",
-    "thumbnails": [
-      "",
-      "",
-      ""
-    ]
-  },
-  {
-    "id": 3,
-    "title": "Producto 3",
-    "description": "producto de gran calidad",
-    "code": "b41",
-    "price": 123,
-    "status": true,
-    "stock": 45,
-    "category": "Limpieza"
+    "id": 1,
+    "title": "producto 1",
+    "description": "nuevo producto",
+    "code": "W8FYB",
+    "price": "45000",
+    "stock": "45",
+    "category": "producto",
+    "thumbnails": []
   }
 ]

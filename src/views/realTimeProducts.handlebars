@@ -1,0 +1,47 @@
+<h2>Modificador de Productos</h2>
+<div class="container2">
+    <form id="productForm">
+        <label for="title">Título:</label>
+        <input type="text" id="title" name="title" required><br>
+
+        <label for="description">Descripción:</label>
+        <input type="text" id="description" name="description" required><br>
+
+        <label for="code">Código:</label>
+        <input type="text" id="code" name="code" required><br>
+
+        <label for="price">Precio:</label>
+        <input type="number" id="price" name="price" required min="0"><br>
+
+        <label for="stock">Stock:</label>
+        <input type="number" id="stock" name="stock" required min="0"><br>
+
+        <label for="category">Categoría:</label>
+        <input type="text" id="category" name="category" required><br>
+
+        <label for="thumbnails">Url de imagen:</label>
+        <input type="text" id="thumbnails" name="thumbnails" ><br>
+
+        <button type="button" id="createProductBtn">Crear Producto</button>
+    </form>
+</div>
+<h2>Productos</h2>
+<div class="container">
+    {{#each data}}
+    <div class="card">
+        <p>ID: {{this.id}}</p>
+        <p>Título: {{this.title}}</p>
+        <p>Descripción: {{this.description}}</p>
+        <p>Código: {{this.code}}</p>
+        <p>Precio: {{this.price}}</p>
+        <p>Stock: {{this.stock}}</p>
+        <p>Categoría: {{this.category}}</p>
+        {{#each this.thumbnails}}
+        <img src="{{this}}" alt="Imagen del producto">
+        {{/each}}
+        <button class="button2" data-id="{{this.id}}">Eliminar</button>
+    </div>
+    {{/each}}
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
