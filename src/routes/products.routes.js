@@ -1,5 +1,6 @@
 import { Router } from "express";
 import ProductManager from "../managers/ProductManager.js";
+import { socketServer } from '../app.js';
 
 const router = Router();
 const productManager = new ProductManager();
@@ -38,13 +39,11 @@ router.get("/:pid", async (req, res) => {
 // Ruta POST /
 router.post("/new_product", async (req, res) => {
     const productData = req.body;
-
     if (
         !productData.title ||
         !productData.description ||
         !productData.code ||
         !productData.price ||
-        !productData.status ||
         !productData.stock ||
         !productData.category
     ) {
@@ -52,6 +51,7 @@ router.post("/new_product", async (req, res) => {
     }
 
     const newProduct = await productManager.addProduct(productData);
+    socketServer.emit('productAdded', newProduct); 
     res.status(201).json(newProduct);
 });
 
@@ -77,6 +77,7 @@ router.delete("/:pid", async (req, res) => {
 
     try {
         await productManager.deleteProduct(parseInt(pid));
+        socketServer.emit('productDeleted', pid);
         res.status(204).send();
     } catch (error) {
         res.status(404).json({ error: error.message });
