@@ -6,92 +6,21 @@ import productModel from '../models/product.model.js';
 //const productManager = new ProductManager();
 const router = Router();
 
-// Ruta GET /
+// Devolucion de los productos
 router.get("/", async (req, res) => {
 
-    let { limit, page, query, sort } = req.query;
+    let { limit, offset } = req.query;
     limit = parseInt(limit) || 10;
-    page = parseInt(page) || 1;
-
-    try {
-        //uso de archivos locales
-        //const products = await productManager.getProducts();
-
-        // Construir el objeto de filtro
-        const filter = {};
-        // Filtro por categoría y disponibilidad
-        if (query) {
-            if (query.category) {
-                filter.category = query.category;
-            }
-            if (query.stock === "available") {
-                filter.stock = { $gt: 0 }; // Productos con stock mayor a 0
-            } else if (query.stock === "unavailable") {
-                filter.stock = 0; // Productos con stock igual a 0
-            }
-        }
-
-        // Obtener el total de productos que coinciden con el filtro
-        const totalProducts = await productModel.countDocuments(filter);
-
-        // Construir el objeto de ordenamiento
-        const sortOptions = {};
-        if (sort) {
-            if (sort === "asc") {
-                sortOptions.price = 1; // Orden ascendente por precio
-            } else if (sort === "desc") {
-                sortOptions.price = -1; // Orden descendente por precio
-            }
-        }
-
-        // Calcular el total de páginas
-        const totalPages = Math.ceil(totalProducts / limit);
-
-        // Calcular el índice de inicio para la paginación
-        const startIndex = (page - 1) * limit;
-
-        // Obtener los productos paginados
-        const products = await productModel.find(filter)
-            .sort(sortOptions)
-            .skip(startIndex)
-            .limit(limit);
-
-        // Calcular si existen páginas previas y siguientes
-        const hasPrevPage = page > 1;
-        const hasNextPage = page < totalPages;
-
-        // Construir los enlaces de paginación
-        const prevLink = hasPrevPage
-            ? `/api/products?limit=${limit}&page=${page - 1}&query=${JSON.stringify(query)}&sort=${sort || ""}`
-            : null;
-        const nextLink = hasNextPage
-            ? `/api/products?limit=${limit}&page=${page + 1}&query=${JSON.stringify(query)}&sort=${sort || ""}`
-            : null;
-
-
-        const response = {
-            status: "success",
-            payload: products,
-            totalPages,
-            prevPage: hasPrevPage ? page - 1 : null,
-            nextPage: hasNextPage ? page + 1 : null,
-            page,
-            hasPrevPage,
-            hasNextPage,
-            prevLink,
-            nextLink,
-        };
-
-        res.json(response);
-
-    } catch (error) {
-        // manejo de errores
-        res.status(500).json({
-            status: "error",
-            error: "No sde encontraron productos",
-            details: error.message,
-        });
-    }
+    offset = parseInt(offset) || 0;
+    
+    const products = await productModel.find(); //productManager.getProducts();
+    const paginatedProducts = products.slice(offset, offset + limit);
+    res.json({
+        total: products.length,
+        limit,
+        offset,
+        data: paginatedProducts
+    });
 });
 
 // Ruta GET /:pid
@@ -100,7 +29,7 @@ router.get("/:pid", async (req, res) => {
     try {
         const product = await productModel.findById(pid); //productManager.getProductById(parseInt(pid));
 
-        if (!prducts) {
+        if (!product) {
             return res.status(404).json({ error: 'Producto no encontrado' });
         }
         res.json(product);
