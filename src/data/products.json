@@ -1,12 +1,1 @@
-[
-  {
-    "id": 1,
-    "title": "producto 1",
-    "description": "nuevo producto",
-    "code": "W8FYB",
-    "price": "45000",
-    "stock": "45",
-    "category": "producto",
-    "thumbnails": []
-  }
-]
+[]
