@@ -28,4 +28,8 @@ router.get("/realtimeproducts", async (req, res) => {
     });
 });
 
+router.get("/**",async ( req, res) =>{
+    res.render('error404');
+})
+
 export default router;
