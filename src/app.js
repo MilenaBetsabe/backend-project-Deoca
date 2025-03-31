@@ -1,15 +1,29 @@
 import express, { json } from 'express';
+import mongoose from 'mongoose';
 import handlebars from 'express-handlebars';
 import __dirname from './utils.js';
 import { Server } from 'socket.io';
-
+import dotenv from 'dotenv';
 //Rutas
 import productsRouter from './routes/products.routes.js';
 import cartsRouter from './routes/carts.routes.js';
 import viewsRouter from './routes/views.routes.js';
 
+
+dotenv.config(); // permite trabajar con variables de entorno
+const URIMongoDB = process.env.URIMONGO; //inicializo la variable 
+const PORT = process.env.PORT;
+
 const app = express();
-const PORT = 8080;
+
+//conexion a la base de datos
+mongoose.connect(URIMongoDB) 
+    .then( ( ) => console.log("Conexion a base de datos exitosa"))
+    .catch( (err) => { 
+        console.log("Error en conexion: " + err);
+        process.exit();
+    })
+
 const httpServer = app.listen(PORT, () => console.log("Listening on port " + PORT));
 
 //inicializamos el motor de plantillas
