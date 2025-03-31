@@ -1,9 +1,10 @@
 import express, { json } from 'express';
 import mongoose from 'mongoose';
-import handlebars from 'express-handlebars';
+import { create } from 'express-handlebars'; 
 import __dirname from './utils.js';
 import { Server } from 'socket.io';
 import dotenv from 'dotenv';
+
 //Rutas
 import productsRouter from './routes/products.routes.js';
 import cartsRouter from './routes/carts.routes.js';
@@ -26,8 +27,20 @@ mongoose.connect(URIMongoDB)
 
 const httpServer = app.listen(PORT, () => console.log("Listening on port " + PORT));
 
+const hbs = create({ 
+    helpers: {
+        ifEquals: function(arg1, arg2, options) {
+            return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+        }
+    },
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true
+    }
+});
+
 //inicializamos el motor de plantillas
-app.engine('handlebars', handlebars.engine());
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 
