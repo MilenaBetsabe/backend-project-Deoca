@@ -1,17 +1,99 @@
 <h2>Productos</h2>
+
+<!-- Filtro de Productos -->
+<div class="container2">
+    <form method="GET" action="/" id="filterForm">
+        <input type="text" name="query[title]" placeholder="Buscar por nombre" value="{{query.title}}">
+
+        <select name="query[category]">
+            <option value="">Todas las categorías</option>
+            <option value="Limpieza" {{#ifEquals query.category "Limpieza" }}selected{{/ifEquals}}>Limpieza</option>
+            <option value="Aromatizante" {{#ifEquals query.category "Aromatizante" }}selected{{/ifEquals}}>Aromatizante
+            </option>
+            <option value="Desengrazante" {{#ifEquals query.category "Desengrazante" }}selected{{/ifEquals}}>
+                Desengrazante</option>
+        </select>
+
+        <select name="query[stock]">
+            <option value="">Todas</option>
+            <option value="available" {{#ifEquals query.stock "available" }}selected{{/ifEquals}}>Disponible</option>
+            <option value="unavailable" {{#ifEquals query.stock "unavailable" }}selected{{/ifEquals}}>No disponible
+            </option>
+        </select>
+
+        <select name="sort">
+            <option value="">Ordenar por</option>
+            <option value="asc" {{#ifEquals sort "asc" }}selected{{/ifEquals}}>Precio ascendente</option>
+            <option value="desc" {{#ifEquals sort "desc" }}selected{{/ifEquals}}>Precio descendente</option>
+        </select>
+
+        <input type="hidden" name="limit" value="10">
+        <input type="hidden" name="page" value="1">
+
+        <button type="submit">Buscar</button>
+    </form>
+</div>
+
+<!-- Todos los Productos Filtrados -->
 <div class="container">
-        {{#each data}}
-        <div class="card">
-            <p>ID: {{this.id}}</p>
-            <p>Título: {{this.title}}</p>
-            <p>Descripción: {{this.description}}</p>
-            <p>Código: {{this.code}}</p>
-            <p>Precio: {{this.price}}</p>
-            <p>Stock: {{this.stock}}</p>
-            <p>Categoría: {{this.category}}</p>
-            {{#each this.thumbnails}}
-            <img src="{{this}}" alt="Imagen del producto">
-            {{/each}}
-        </div>
+    {{#each payload}}
+    <div class="card">
+        <h3>{{this.title}}</h3>
+        <p>Stock: {{this.stock}}</p>
+        <p>Categoría: {{this.category}}</p>
+        {{#each this.thumbnails}}
+        <img src="{{this}}" alt="Imagen del producto">
         {{/each}}
+
+        <!-- Botón para ver detalles del producto -->
+        <a href="/product/{{this._id}}" class="btn btn-details">
+            Ver detalles
+        </a>
+
+        <!-- Botón para agregar al carrito -->
+        <button class="btn btn-add-to-cart" onclick="addToCart('{{this._id}}')">
+            Agregar al carrito
+        </button>
     </div>
+    {{/each}}
+</div>
+
+
+{{#if hasPrevPage}}
+<a class="pageButton" href="{{prevLink}}">Anterior</a>
+{{/if}}
+{{#if hasNextPage}}
+<a class="pageButton" href="{{nextLink}}">Siguiente</a>
+{{/if}}
+
+<script>
+    // Función para agregar al carrito
+    async function addToCart(productId) {
+        
+        try {
+            const quantity = 1; 
+            const response = await fetch(`/api/carts/1/product`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    quantity: quantity
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                alert('Producto agregado al carrito exitosamente');
+            } else {
+                const errorData = await response.json();
+                alert(errorData.message || 'Error al agregar el producto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al conectar con el servidor');
+        }
+    }
+
+</script>

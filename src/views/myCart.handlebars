@@ -1,0 +1,59 @@
+<div>
+    <h1>Mi Carrito</h1>
+
+    {{#if cartItems.length}}
+    <div>
+        {{#each cartItems}}
+        <div class="card">
+            <h3>{{this.productName}}</h3>
+            <p>Precio: ${{this.productPrice}}</p>
+            <p>Cantidad: {{this.quantity}}</p>
+            <p>Total por producto: ${{this.totalPrice}}</p>
+
+            <button class="btn" onclick="deleteProduct('{{this.cartId}}', '{{this.productId}}')">
+                Eliminar del carrito
+            </button>
+        </div>
+        {{/each}}
+    </div>
+
+    <h3>Total del Carrito: ${{total}}</h3>
+    {{else}}
+    <p>Tu carrito está vacío.</p>
+    {{/if}}
+
+    <a class="btn" href="/">Volver a la lista de productos</a>
+</div>
+
+<script>
+    async function deleteProduct(cartId, productId) {
+        try {
+            console.log(cartId)
+            console.log(productId)
+            const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            console.log('Respuesta recibida:', response);
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error del servidor:', errorData);
+                throw new Error(errorData.message || 'Error al eliminar el producto');
+            }
+
+            const result = await response.json();
+            console.log('Resultado exitoso:', result);
+
+            alert(result.message || 'Producto eliminado del carrito');
+            window.location.reload();
+
+        } catch (error) {
+            console.error('Error completo:', error);
+            alert(error.message || 'Error al conectar con el servidor');
+        }
+    }
+</script>
